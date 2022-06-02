@@ -30,11 +30,12 @@ const App = () => {
     if (!query) return;
     setState({ pictures: [], isLoading: true, finish: false });
     fetchPictures();
-  }, [query]);
-  useEffect(() => {
-    if (!query) return;
-    fetchPictures();
-  }, [page]);
+  }, [query, page]);
+
+  // useEffect(() => {
+  //   if (!query) return;
+  //   fetchPictures();
+  // }, [page]);
 
   const fetchPictures = async () => {
     try {
@@ -66,27 +67,36 @@ const App = () => {
     setPage((prevState) => {
       return prevState + 1;
     });
-    state.isLoading = true;
+    //state.isLoading = true;
     setState({ ...state });
   };
 
   const handleOpenModal = (id) => {
-    setState((prevState) => {
-      const { pictures } = prevState;
+    // setState((prevState) => {
+    //   const { pictures } = prevState;
 
-      const { largeImageURL, tags } = pictures.find(
-        (picture) => picture.id === id
-      );
-      prevState.showModal = true;
-      prevState.largeImageURL = largeImageURL;
-      prevState.tags = tags;
-      return { ...prevState };
+    const { largeImageURL } = pictures.find((picture) => picture.id === id);
+    // prevState.showModal = true;
+    // prevState.largeImageURL = largeImageURL;
+    // prevState.tags = tags;
+    setState({
+      ...state,
+      largeImageURL,
+      showModal: true,
+      //return { ...prevState };
     });
   };
-  const closeModal = (e) => {
-    state.showModal = false;
-    setState({ ...state });
+
+  const closeModal = () => {
+    setState(({ showModal }) => {
+      return {
+        ...state,
+
+        showModal: !showModal,
+      };
+    });
   };
+
   return (
     <div className="App">
       <Searchbar onSubmit={onChangeQwery} />
@@ -104,3 +114,7 @@ const App = () => {
 };
 
 export default App;
+
+// App.js:
+
+// Функцию fetchPictures лучше создавать внутри первого аргумента useEffect, а не внутри компонента, чтобы не создавать ее при каждом рендере.
